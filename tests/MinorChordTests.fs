@@ -141,5 +141,5 @@ let ``A minor chord with major seventh, and a major sixth interval, expect a m/M
 let ``A minor chord with a diminished fith and a minor seventh interval, expect a m7b5 chord`` () =
     let chordnotes = [(emptyNote, DiminishedFifth); (emptyNote, MinorSeventh)]
     let expected = FlatFive
-    let (_, _, actual, _) = getChordAlteration (Major, Seven, chordnotes)
+    let (_, _, _, actual, _) = getChordAlteration (Major, Seven, NoModifier, chordnotes)
     Assert.Equal(expected, actual)

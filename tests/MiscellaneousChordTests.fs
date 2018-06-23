@@ -25,21 +25,21 @@ let ``A chord with only unison and diminished fifth, expect a flat five chord`` 
 let ``A chord with perfect fourth and a perfect fifth, expect a sus4 chord`` () =
     let chordnotes = [(emptyNote, PerfectFourth); (emptyNote, PerfectFifth) ]
     let expected = Sus4
-    let (_, actual, _) = getChordModifier (Five, chordnotes)
+    let (_, _, actual, _) = getChordModifier (Five, NoExtension, chordnotes)
     Assert.Equal(expected, actual)
 
 [<Fact>]
 let ``A chord with major second and perfect fifth, expect a sus2 chord`` () =
     let chordnotes = [(emptyNote, MajorSecond); (emptyNote, PerfectFifth) ]
     let expected = Sus2
-    let (_, actual, _) = getChordModifier (Five, chordnotes)
+    let (_, _, actual, _) = getChordModifier (Five, NoExtension, chordnotes)
     Assert.Equal(expected, actual)
 
 [<Fact>]
 let ``A chord with perfect fifth and a diminished fifth, expect a #11 chord`` () =
     let chordnotes = [(emptyNote, PerfectFifth); (emptyNote, DiminishedFifth) ]
     let expected = SharpEleven
-    let (_, _, actual, _) = getChordAlteration (NoTonality, NoExtension, chordnotes)
+    let (_, _, _, actual, _) = getChordAlteration (NoTonality, NoExtension, NoModifier, chordnotes)
     Assert.Equal(expected, actual)
 
 [<Fact>]
