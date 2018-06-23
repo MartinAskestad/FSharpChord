@@ -11,6 +11,7 @@
     <Compile Include="ScaleTests.fs" />
     <Compile Include="MajorChordTests.fs" />
     <Compile Include="MinorChordTests.fs" />
+    <Compile Include="DominantChordTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
