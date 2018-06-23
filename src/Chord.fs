@@ -1,6 +1,5 @@
 module Chord
 
-open Note
 open Scale
 
 type ChordTonality = 
@@ -8,16 +7,20 @@ type ChordTonality =
     | Minor
     | Diminished
     | Augmented
+    | Five
+    | FlatFifth
     | NoTonality
 
 let getChordTonality notesWithIntervals =
     let matchTonality tonality noteAndInterval =
         match (tonality, snd noteAndInterval) with
-        | _,     MajorThird         -> Major
-        | _,     MinorThird         -> Minor
-        | Minor, DiminishedFifth    -> Diminished
-        | Major, MinorSixth         -> Augmented
-        | _                         -> tonality
+        | _,              MajorThird         -> Major
+        | _,              MinorThird         -> Minor
+        | NoTonality,     PerfectFifth       -> Five
+        | NoTonality,     DiminishedFifth    -> FlatFifth
+        | Minor,          DiminishedFifth    -> Diminished
+        | Major,          MinorSixth         -> Augmented
+        | _                                  -> tonality
     ((List.fold(matchTonality) NoTonality notesWithIntervals), notesWithIntervals)
 
 type ChordExtension =
@@ -87,3 +90,14 @@ let getChordAlteration (tonality, extension, notesWithIntervals) =
         | tonality, _, MinorThird when tonality <> Minor -> SharpNine
         | _                                              -> alteration
     (tonality, extension, (List.fold(matchAlteration) NoAlteration notesWithIntervals), notesWithIntervals)
+
+type ChordModifier =
+    | Sus4
+    | NoModifier
+
+let getChordModifier (tonality, notesWithIntervals)=
+    let matchModifier modifier noteAndInterval =
+        match (tonality, modifier, snd noteAndInterval) with
+        | Five, _, PerfectFourth -> Sus4
+        | _ -> modifier
+    (tonality, (List.fold(matchModifier) NoModifier notesWithIntervals), notesWithIntervals)
