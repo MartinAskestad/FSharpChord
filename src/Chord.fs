@@ -3,12 +3,16 @@ module Chord
 open Note
 open Scale
 
-type ChordTonality = | Major | NoTonality
+type ChordTonality = 
+    | Major 
+    | Minor
+    | NoTonality
 
 let getChordTonality notesWithIntervals =
     let matchTonality tonality noteAndInterval =
         match (tonality, snd noteAndInterval) with
-        | NoTonality, MajorThird -> Major
+        | _, MajorThird -> Major
+        | _, MinorThird -> Minor
         | _                      -> tonality
     ((List.fold(matchTonality) NoTonality notesWithIntervals), notesWithIntervals)
 
@@ -19,6 +23,11 @@ type ChordExtension =
     | MajorNine
     | MajorEleven
     | MajorThirteen
+    | Seven
+    | Nine
+    | Eleven
+    | Thirteen
+    | AddNine
     | NoExtension
 
 let (|Major7Extension|_|) = function
@@ -31,12 +40,18 @@ let (|Major7Extension|_|) = function
 let getChordExtension (tonality, notesWithIntervals) =
     let matchExtension extension noteAndInterval =
         match (tonality, extension, snd noteAndInterval) with
-        | Major, NoExtension, MajorSixth        -> Sixth
-        | Major, Sixth, MajorSecond             -> SixNine
-        | Major, NoExtension, MajorSeventh      -> MajorSeven
-        | Major, Major7Extension, MajorSecond   -> MajorNine
-        | Major, Major7Extension, PerfectFourth -> MajorEleven
-        | Major, Major7Extension, MajorSixth    -> MajorThirteen
+        | _,     NoExtension, MajorSixth        -> Sixth
+        | _,     Sixth, MajorSecond             -> SixNine
+        | _,     NoExtension, MajorSeventh      -> MajorSeven
+        | _,     Major7Extension, MajorSecond   -> MajorNine
+        | _,     Major7Extension, PerfectFourth -> MajorEleven
+        | _,     Major7Extension, MajorSixth    -> MajorThirteen
+        | Minor, NoExtension, MinorSeventh      -> Seven
+        | Minor, NoExtension, MajorSecond       -> AddNine
+        | Minor, Seven, MajorSecond             -> Nine
+        | Minor, Nine, PerfectFourth            -> Eleven
+        | Minor, Seven, PerfectFourth           -> Eleven
+        | Minor, Eleven, MajorSixth             -> Thirteen
         | _                                     -> NoExtension
     (tonality, (List.fold(matchExtension) NoExtension) notesWithIntervals, notesWithIntervals)
 
