@@ -48,7 +48,7 @@ let ``A chord with bass note other than root, expect a slash chord`` () =
                       (Note('E', Natural, 4, 16), MajorThird)
                       (Note('G', Natural, 7, 7), PerfectFifth) ]
     let expected = Some (Note('G', Natural, 7, 7)) 
-    let actual = getChordSlash chordnotes
+    let (_, _, _, _, actual, _) = getChordSlash (NoTonality, NoExtension, NoModifier, NoAlteration, chordnotes)
     Assert.Equal(expected, actual)
 
 [<Fact>]
@@ -57,7 +57,7 @@ let ``A chord without a fifth, expect omitted fifth`` () =
                        (emptyNote, PerfectFourth)
                        (emptyNote, MajorSixth) ]
     let expected = Some "5" 
-    let actual = getChordOmission chordnotes
+    let (_, _, _, _, _, actual, _) = getChordOmission (NoTonality, NoExtension, NoModifier, NoAlteration, None, chordnotes)
     Assert.Equal(expected, actual)
 
 [<Fact>]
@@ -65,12 +65,12 @@ let ``A chord without a third, expect omitted third`` () =
     let chordnotes = [(emptyNote, Unison)
                       (emptyNote, PerfectFifth) ]
     let expected = Some "3"
-    let actual = getChordOmission chordnotes
+    let (_, _, _, _, _, actual, _) = getChordOmission (NoTonality, NoExtension, NoModifier, NoAlteration, None, chordnotes)
     Assert.Equal(expected, actual)
 
 [<Fact>]
 let ``A chord without a thir or a fifth, expect a omitted 3, 5`` () =
     let chordnotes = [(emptyNote, Unison)]
     let expected = Some "3, 5"
-    let actual = getChordOmission chordnotes
+    let (_, _, _, _, _, actual, _) = getChordOmission (NoTonality, NoExtension, NoModifier, NoAlteration, None, chordnotes)
     Assert.Equal(expected, actual)
