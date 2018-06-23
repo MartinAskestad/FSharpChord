@@ -1,4 +1,4 @@
-module chords
+module App
 
 open Fable.Core
 open Fable.Core.JsInterop
