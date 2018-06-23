@@ -37,6 +37,13 @@ let (|Major7Extension|_|) = function
     | MajorThirteen -> Some()
     | _             -> None
 
+let (|Minor7Extension|_|) = function
+    | Seven -> Some()
+    | Nine -> Some()
+    | Eleven -> Some()
+    | Thirteen -> Some()
+    | _         -> None
+
 let getChordExtension (tonality, notesWithIntervals) =
     let matchExtension extension noteAndInterval =
         match (tonality, extension, snd noteAndInterval) with
@@ -48,10 +55,9 @@ let getChordExtension (tonality, notesWithIntervals) =
         | _,     Major7Extension, MajorSixth    -> MajorThirteen
         | Minor, NoExtension, MinorSeventh      -> Seven
         | Minor, NoExtension, MajorSecond       -> AddNine
-        | Minor, Seven, MajorSecond             -> Nine
-        | Minor, Nine, PerfectFourth            -> Eleven
-        | Minor, Seven, PerfectFourth           -> Eleven
-        | Minor, Eleven, MajorSixth             -> Thirteen
+        | Minor, Minor7Extension, MajorSecond   -> Nine
+        | Minor, Minor7Extension, PerfectFourth -> Eleven
+        | Minor, Minor7Extension, MajorSixth    -> Thirteen
         | _                                     -> NoExtension
     (tonality, (List.fold(matchExtension) NoExtension) notesWithIntervals, notesWithIntervals)
 
