@@ -1,6 +1,7 @@
 module Chord
 
 open Scale
+open Note
 
 type ChordTonality = 
     | Major 
@@ -92,12 +93,33 @@ let getChordAlteration (tonality, extension, notesWithIntervals) =
     (tonality, extension, (List.fold(matchAlteration) NoAlteration notesWithIntervals), notesWithIntervals)
 
 type ChordModifier =
+    | Sus2
     | Sus4
     | NoModifier
 
 let getChordModifier (tonality, notesWithIntervals)=
     let matchModifier modifier noteAndInterval =
         match (tonality, modifier, snd noteAndInterval) with
+        | Five, _, MajorSecond   -> Sus2
         | Five, _, PerfectFourth -> Sus4
         | _ -> modifier
     (tonality, (List.fold(matchModifier) NoModifier notesWithIntervals), notesWithIntervals)
+
+let getChordSlash notesWithIntervals =
+    let (root, _) = List.head notesWithIntervals
+    let (bass, _) = List.minBy(fun ((Note(_, _, _, midi)), _) -> midi) notesWithIntervals
+    match (root, bass) with
+    | r, b when isSameNote r b -> None
+    | _ -> Some bass
+
+let getChordOmission notesWithIntervals =
+    let fifths = [DiminishedFifth; PerfectFifth; MinorSixth]
+    let thirds = [MajorSecond; MinorThird; MajorThird; PerfectFourth]
+    let omitted5 = notesWithIntervals |> List.filter(fun (_, interval) -> (List.exists(fun interval' -> interval = interval') fifths))
+    let omitted3 = notesWithIntervals |> List.filter(fun (_, interval) -> (List.exists(fun interval' -> interval = interval') thirds))
+    match (omitted3, omitted5) with
+    | [], [] -> Some "3, 5"
+    | [], _::_ -> Some "3"
+    | _::_, [] -> Some "5"
+    | _ -> None
+    
