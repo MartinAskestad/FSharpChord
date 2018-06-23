@@ -85,3 +85,17 @@ let ``A major chord with major seventh and major sixth interval, expect a Maj13 
     let expected = MajorThirteen
     let (_, actual, _) = getChordExtension (Major, chordnotes)
     Assert.Equal(expected, actual)
+
+[<Fact>]
+let ``A Maj7 chord with a diminished fifth interval, expect a Maj7#11 chord`` () =
+    let chordnotes = [(emptyNote, PerfectFifth); (emptyNote, DiminishedFifth) ]
+    let expected = SharpEleven
+    let (_, _, actual, _) = getChordAlteration (Major, MajorSeven, chordnotes)
+    Assert.Equal(expected, actual)
+
+[<Fact>]
+let ``A Major chord with a diminished fith interval, expect a Major flat five chord`` () =
+    let chordnotes = [(emptyNote, DiminishedFifth) ]
+    let expected = FlatFive
+    let (_, _, actual, _) = getChordAlteration (Major, NoExtension, chordnotes)
+    Assert.Equal(expected, actual) 
