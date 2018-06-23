@@ -6,8 +6,10 @@
     <ProjectReference Include="..\src\chords.fsproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestChord.fs" />
     <Compile Include="NoteTests.fs" />
     <Compile Include="ScaleTests.fs" />
+    <Compile Include="MajorChordTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

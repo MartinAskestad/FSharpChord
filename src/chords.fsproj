@@ -5,6 +5,7 @@
   <ItemGroup>
     <Compile Include="Note.fs" />
     <Compile Include="Scale.fs" />
+    <Compile Include="Chord.fs" />
     <Compile Include="App.fs" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
