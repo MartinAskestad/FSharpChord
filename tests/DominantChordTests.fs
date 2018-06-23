@@ -87,26 +87,26 @@ let ``A major chord with a minor seventh and, major second, perfect fourth, majo
 let ``A chord with a augmented fifth and minor seventh, expect a #5 chord`` () =
     let chordnotes = [(emptyNote, MinorSixth); (emptyNote, MinorSeventh)]
     let expected = SharpFive
-    let (_, _, actual, _) = getChordAlteration (NoTonality, NoExtension, chordnotes)
+    let (_, _, _, actual, _) = getChordAlteration (NoTonality, NoExtension, NoModifier, chordnotes)
     Assert.Equal(expected, actual)
 
 [<Fact>]
 let ``A chord with a diminished fifth expect a b5 chord`` () =
     let chordnotes = [(emptyNote, DiminishedFifth)]
     let expected = FlatFive
-    let (_, _, actual, _) = getChordAlteration (NoTonality, NoExtension, chordnotes)
+    let (_, _, _, actual, _) = getChordAlteration (NoTonality, NoExtension, NoModifier, chordnotes)
     Assert.Equal(expected, actual)
 
 [<Fact>]
 let ``A chord with a minor second expect a b9 chord`` () =
     let chordnotes = [(emptyNote, MinorSecond)]
     let expected = FlatNine
-    let (_, _, actual, _) = getChordAlteration (NoTonality, NoExtension, chordnotes)
+    let (_, _, _, actual, _) = getChordAlteration (NoTonality, NoExtension, NoModifier, chordnotes)
     Assert.Equal(expected, actual)
 
 [<Fact>]
 let ``A chord with a minor third expect a #9 chord`` () =
     let chordnotes = [(emptyNote, MinorThird)]
     let expected = SharpNine
-    let (_, _, actual, _) = getChordAlteration (NoTonality, NoExtension, chordnotes)
+    let (_, _, _, actual, _) = getChordAlteration (NoTonality, NoExtension, NoModifier, chordnotes)
     Assert.Equal(expected, actual)
