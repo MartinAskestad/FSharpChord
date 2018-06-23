@@ -21,17 +21,21 @@ type ChordExtension =
     | MajorThirteen
     | NoExtension
 
+let (|Major7Extension|_|) = function
+    | MajorSeven    -> Some()
+    | MajorNine     -> Some()
+    | MajorEleven   -> Some()
+    | MajorThirteen -> Some()
+    | _             -> None
+
 let getChordExtension (tonality, notesWithIntervals) =
     let matchExtension extension noteAndInterval =
         match (tonality, extension, snd noteAndInterval) with
-        | Major, NoExtension, MajorSixth -> Sixth
-        | Major, Sixth, MajorSecond -> SixNine
-        | Major, NoExtension, MajorSeventh -> MajorSeven
-        | Major, MajorSeven, MajorSecond -> MajorNine
-        | Major, MajorSeven, PerfectFourth -> MajorEleven
-        | Major, MajorSeven, MajorSixth -> MajorThirteen
-        | Major, MajorNine, PerfectFourth -> MajorEleven
-        | Major, MajorNine, MajorSixth -> MajorThirteen
-        | Major, MajorEleven, MajorSixth -> MajorThirteen
-        | _ -> NoExtension
+        | Major, NoExtension, MajorSixth        -> Sixth
+        | Major, Sixth, MajorSecond             -> SixNine
+        | Major, NoExtension, MajorSeventh      -> MajorSeven
+        | Major, Major7Extension, MajorSecond   -> MajorNine
+        | Major, Major7Extension, PerfectFourth -> MajorEleven
+        | Major, Major7Extension, MajorSixth    -> MajorThirteen
+        | _                                     -> NoExtension
     (tonality, (List.fold(matchExtension) NoExtension) notesWithIntervals, notesWithIntervals)
