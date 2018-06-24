@@ -67,3 +67,8 @@ let noteFromMidi (midi:float) =
     let sharps = allNotes |> List.filter(fun (Note(_, accidental, _, _)) -> accidental = Sharp || accidental = Natural)
     let (Note(name, accidental, idx, _)) = sharps.[midi' % 12]
     Note(name, accidental, idx, midi')
+
+let noteToString = function
+    | Note(name, Flat, _, _)    -> sprintf "%c♭" name
+    | Note(name, Natural, _, _) -> sprintf "%c"  name
+    | Note(name, Sharp, _, _)   -> sprintf "%c♯" name

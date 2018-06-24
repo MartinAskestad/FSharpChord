@@ -12,6 +12,15 @@ type ChordTonality =
     | FlatFifth
     | NoTonality
 
+let private chordTonalityToString = function
+    | Major  -> ""
+    | Minor -> "m"
+    | Diminished -> "°"
+    | Augmented -> "+"
+    | Five -> "5"
+    | FlatFifth -> "(♭5)"
+    | NoTonality -> ""
+
 let getChordTonality notesWithIntervals =
     let matchTonality tonality noteAndInterval =
         match (tonality, snd noteAndInterval) with
@@ -38,6 +47,21 @@ type ChordExtension =
     | AddNine
     | DiminishedSeven
     | NoExtension
+
+let private chordExtensionToString = function
+    | Sixth -> "6"
+    | SixNine -> "6/9"
+    | MajorSeven -> "Maj7"
+    | MajorNine -> "Maj9"
+    | MajorEleven -> "Maj11"
+    | MajorThirteen -> "Maj13"
+    | Seven -> "7"
+    | Nine -> "9"
+    | Eleven -> "11"
+    | Thirteen -> "13"
+    | AddNine -> "add9"
+    | DiminishedSeven -> "dim7"
+    | NoExtension -> ""
 
 let (|Major7Extension|_|) = function
     | MajorSeven    -> Some()
@@ -76,13 +100,19 @@ type ChordModifier =
     | Sus4
     | NoModifier
 
-let getChordModifier (tonality, extension, notesWithIntervals)=
+let private chordModifierToString = function
+    | Sus2 -> "sus2"
+    | Sus4 -> "sus4"
+    | _ -> ""
+let getChordModifier (tonality, extension, notesWithIntervals) =
     let matchModifier modifier noteAndInterval =
         match (tonality, modifier, snd noteAndInterval) with
         | Five, _, MajorSecond   -> Sus2
         | Five, _, PerfectFourth -> Sus4
         | _ -> modifier
-    (tonality, extension, (List.fold(matchModifier) NoModifier notesWithIntervals), notesWithIntervals)
+    match (List.fold(matchModifier) NoModifier notesWithIntervals) with
+    | modifier when modifier <> NoModifier -> (NoTonality, extension, modifier, notesWithIntervals)
+    | _                                    -> (tonality, extension, NoModifier, notesWithIntervals)
 
 type ChordAlteration =
     | SharpEleven
@@ -91,6 +121,14 @@ type ChordAlteration =
     | FlatNine
     | SharpNine
     | NoAlteration
+
+let private chordAlterationToString = function
+    | SharpEleven  -> "#11"
+    | FlatFive     -> "b5"
+    | SharpFive    -> "#5"
+    | FlatNine     -> "b9"
+    | SharpNine    -> "#9"
+    | NoAlteration -> ""
 
 let getChordAlteration (tonality, extension, modifier, notesWithIntervals) =
     let has interval = List.exists(fun (_, interval') -> interval' = interval) notesWithIntervals
@@ -113,6 +151,10 @@ let getChordSlash (tonality, extension, modifier, alteration, notesWithIntervals
                     | _ -> Some bass
     (tonality, extension, modifier, alteration, slash, notesWithIntervals)
 
+let private chordSlashToString = function
+    | Some slash -> sprintf "/%s" <| noteToString slash
+    | None       -> ""
+
 let getChordOmission (tonality, extension, modifier, alteration, slash, notesWithIntervals) =
     let fifths = [DiminishedFifth; PerfectFifth; MinorSixth]
     let thirds = [MajorSecond; MinorThird; MajorThird; PerfectFourth]
@@ -125,6 +167,10 @@ let getChordOmission (tonality, extension, modifier, alteration, slash, notesWit
                     | _ -> None
     (tonality, extension, modifier, alteration, slash, omission, notesWithIntervals)
 
+let private chordOmissionToString = function
+    | Some omission -> sprintf "(omit %s)" omission
+    | None          -> ""
+
 let private setup notes =
     let root = List.head notes
     let scale = scaleWithIntervals root
@@ -135,3 +181,15 @@ let private setup notes =
 
 let getChord =
     setup >> getChordTonality >> getChordExtension >> getChordModifier >> getChordAlteration >> getChordSlash >> getChordOmission
+
+let chordToString (tonality, extension, modifier, alteration, slash, omission, notesWithIntervals) =
+    let (root, _) = List.head notesWithIntervals
+    sprintf "%s%s%s%s%s%s%s"
+                   <| noteToString root
+                   <| chordTonalityToString tonality
+                   <| chordExtensionToString extension
+                   <| chordModifierToString modifier
+                   <| chordAlterationToString alteration
+                   <| chordSlashToString slash
+                   <| chordOmissionToString omission
+                
