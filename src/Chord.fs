@@ -76,13 +76,16 @@ type ChordModifier =
     | Sus4
     | NoModifier
 
-let getChordModifier (tonality, extension, notesWithIntervals)=
+let getChordModifier (tonality, extension, notesWithIntervals) =
     let matchModifier modifier noteAndInterval =
         match (tonality, modifier, snd noteAndInterval) with
         | Five, _, MajorSecond   -> Sus2
         | Five, _, PerfectFourth -> Sus4
         | _ -> modifier
-    (tonality, extension, (List.fold(matchModifier) NoModifier notesWithIntervals), notesWithIntervals)
+    match (List.fold(matchModifier) NoModifier notesWithIntervals) with
+    | modifier when modifier <> NoModifier -> (NoTonality, extension, modifier, notesWithIntervals)
+    | _                                    -> (tonality, extension, NoModifier, notesWithIntervals)
+
 
 type ChordAlteration =
     | SharpEleven
